@@ -11,6 +11,38 @@
   </head>
 
   <body>
-    <%= yield %>
+
+    <div id="container">
+        <%= yield %>
+    <p id="blurb">
+      <a href="https://github.com/stuartleach">
+        github.com/stuartleach </a>
+    </p>
+    </div>
   </body>
 </html>
+
+<style>
+
+ #container {
+    display: absolute;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: monospace;
+  }
+
+  #blurb {
+    font-size: 2em;
+font-family: monospace;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+
+  </style>

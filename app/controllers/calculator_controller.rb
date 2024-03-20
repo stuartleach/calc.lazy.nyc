@@ -4,6 +4,8 @@ class CalculatorController < ApplicationController
   def index
     # This action might set up instance variables for the view,
     # but typically won't contain 'puts' statements.
+    @display = '0'
+    @result = '0'
   end
 
   def calculate
@@ -12,7 +14,7 @@ class CalculatorController < ApplicationController
     # Reset the calculator
     if button == 'C'
       reset_session_variables
-      @display = ''
+      @display = '0'
     elsif button == '='
       # Perform calculation
       perform_calculation
@@ -32,6 +34,10 @@ class CalculatorController < ApplicationController
     session[:operation] = nil
     session[:operator] = nil
     session[:operand] = nil
+  end
+
+  def set_display_to_zero
+    @display = '0'
   end
 
   def perform_calculation
