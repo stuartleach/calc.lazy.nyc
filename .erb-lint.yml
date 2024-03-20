@@ -1,0 +1,15 @@
+---
+linters:
+  Rubocop:
+    enabled: true
+    on_save: true
+    rubocop_config:
+      require:
+        - rubocop-performance
+      AllCops:
+        TargetRubyVersion: 2.5
+        Exclude:
+          - 'vendor/**/*'
+          - 'db/schema.rb'
+  EnabledRailsHttpStatus:
+    enabled: true

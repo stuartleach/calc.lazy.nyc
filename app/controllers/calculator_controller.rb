@@ -2,12 +2,17 @@ class CalculatorController < ApplicationController
   before_action :initialize_session_variables, only: :index
 
   def index
-    # Initializes the display variables for the view
     @display = session[:display] ||= "0"
+    # Initialize the start time for the session if it's not already set
+    session[:start_time] ||= Time.current
   end
 
   def calculate
     button = params[:button]
+
+    # Start timing from when the button is clicked
+    start_time = Time.current
+
     case button
     when "C"
       reset_session_variables
@@ -17,7 +22,8 @@ class CalculatorController < ApplicationController
       update_calculation(button)
     end
 
-    # Persist display for page reloads
+    # Calculate elapsed time and store it
+    @elapsed = Time.current - start_time
     session[:display] = @display
 
     respond_to do |format|

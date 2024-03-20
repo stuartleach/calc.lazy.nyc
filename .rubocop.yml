@@ -1,0 +1,13 @@
+AllCops:
+  TargetRubyVersion: 3.2
+  NewCops: enable
+  AutoCorrect: true
+
+Metrics/LineLength:
+  Max: 120
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/Documentation:
+  Enabled: true
