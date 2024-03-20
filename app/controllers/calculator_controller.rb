@@ -14,7 +14,6 @@ class CalculatorController < ApplicationController
     button = params[:button]
 
     # Start timing from when the button is clicked
-
     ActiveSupport::Notifications.instrument("calculate.action_controller") do
       case button
       when "C"
@@ -25,9 +24,10 @@ class CalculatorController < ApplicationController
         update_calculation(button)
       end
     end
+end
 
     # Calculate elapsed time and store it
-    session[:display] = @display
+        session[:display] = @display
 
     respond_to do |format|
       format.turbo_stream
