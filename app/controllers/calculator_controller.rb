@@ -14,19 +14,19 @@ class CalculatorController < ApplicationController
     button = params[:button]
 
     # Start timing from when the button is clicked
-    start_time = Time.current
 
-    case button
-    when "C"
-      reset_session_variables
-    when "="
-      perform_calculation
-    else
-      update_calculation(button)
+    ActiveSupport::Notifications.instrument("calculate.action_controller") do
+      case button
+      when "C"
+        reset_session_variables
+      when "="
+        perform_calculation
+      else
+        update_calculation(button)
+      end
     end
 
     # Calculate elapsed time and store it
-    @elapsed = Time.current - start_time
     session[:display] = @display
 
     respond_to do |format|
