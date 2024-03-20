@@ -2,9 +2,12 @@ class CalculatorController < ApplicationController
   before_action :initialize_session_variables, only: :index
 
   def index
-    @display = session[:display] ||= "0"
+    @display = "0"
+    # @display = "0"
     # Initialize the start time for the session if it's not already set
     session[:start_time] ||= Time.current
+    # refresh
+    reset_session_variables
   end
 
   def calculate
