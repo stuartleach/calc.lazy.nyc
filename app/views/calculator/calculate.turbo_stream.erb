@@ -1,0 +1,4 @@
+<!-- app/views/calculator/calculate.turbo_stream.erb -->
+
+<%= turbo_stream.replace "display", partial: "display", locals: { display: @display || '' } %>
+<%= turbo_stream.replace "result", partial: "result", locals: { result: @result || '' } %>

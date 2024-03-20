@@ -1,0 +1,44 @@
+<!-- app/views/calculator/index.html.erb -->
+
+<%= turbo_frame_tag "calculator" do %>
+  <%= form_tag("/calculate", method: :post, data: { turbo_action: 'replace', turbo_frame: 'calculator' }) do %>
+    
+
+      <%= text_field_tag :display, nil, readonly: true, style: "width: 100%; text-align: right; font-size: 2em; border: 0" %>
+</div>
+<!--
+    <div name="display" id="display"  style="text-align: center; width: 100%; font-size: 2em; margin-bottom: 20px; border: 0">
+-->
+    <div id="keypad" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 300px; margin: auto;">
+      <% ['1', '2', '3', '+', '4', '5', '6', '-', '7', '8', '9', '*', 'C', '0', '/', '='].each do |button| %>
+        <%= button_tag button, name: 'button', value: button, class: "keypad-button" %>
+      <% end %>
+    </div>
+
+    <input type="hidden" name="operation" id="operation">
+    <input type="hidden" name="operator" id="operator">
+    <input type="hidden" name="operand" id="operand">
+  <% end %>
+<% end %>
+
+<!--- <div id="result">
+  <%= turbo_frame_tag "result" do %>
+  <% end %>
+</div> --->
+
+<style>
+.keypad-button {
+    width: 60px;
+    height: 60px;
+    font-size: 20px;
+    padding: 10px;
+    border: none;
+    background-color: #eaeaea;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.keypad-button:hover {
+    background-color: #ccc;
+}
+</style>
