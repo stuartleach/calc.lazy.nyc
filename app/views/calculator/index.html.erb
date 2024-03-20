@@ -1,19 +1,59 @@
 <!-- app/views/calculator/index.html.erb -->
 <div id="smaller-container">
   <%= turbo_frame_tag "calculator" do %>
-    <%= form_tag("/calculate", method: :post, data: { turbo_action: 'replace', turbo_frame: 'calculator' }) do %>
+    <%= form_tag("/calculate", method: :post, id: "calculator_form") do %>
       <div id="display"><%= @display %></div>
-      <div id="keypad" >
+      <div id="keypad">
         <% ['1', '2', '3', '+', '4', '5', '6', '-', '7', '8', '9', '*', 'C', '0', '/', '='].each do |button| %>
-          <%= button_tag button, name: 'button', value: button, class: "keypad-button", data: { turbo_frame: "calculator" } %>
+          <%= button_tag button, type: 'button', name: 'button', value: button, class: "keypad-button" %>
         <% end %>
       </div>
-      <div id="elapsed">
-        <%= @elapsed %>
-      </div>
-    <% end %> <!-- Close form_tag -->
-  <% end %> <!-- Close turbo_frame_tag for "calculator" -->
+    <% end %>
+    <div id="elapsed"><%= @elapsed %></div>
+  <% end %>
 </div>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const displayElement = document.getElementById('display');
+    document.querySelectorAll('.keypad-button').forEach(button => {
+      button.addEventListener('click', (e) => {
+        if (e.target.value === 'C') {
+          displayElement.innerText = '0'; // Reset display
+        } else if (e.target.value === '=') {
+          // document.getElementById('calculator_form').submit(); // Submit form for calculation
+          if (value === '=') {
+  // Send POST request
+  fetch('/calculate', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ operation, operator, operand }),
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  })
+  .then(data => {
+    document.getElementById('result').innerText = data.result;
+    operation = '';
+    operator = '';
+    operand = '';
+  })
+  .catch(error => {
+    console.error('There was a problem with the fetch operation: ', error);
+  });
+  }
+        } else {
+          const currentValue = displayElement.innerText === '0' ? '' : displayElement.innerText;
+          displayElement.innerText = currentValue + e.target.value;
+        }
+      });
+    });
+  });
+</script>
 <style>
   .keypad-button {
     width: 20%;

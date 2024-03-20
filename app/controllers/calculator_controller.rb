@@ -2,18 +2,13 @@ class CalculatorController < ApplicationController
   before_action :initialize_session_variables, only: :index
 
   def index
-    @display = "0"
-    # @display = "0"
-    # Initialize the start time for the session if it's not already set
-    session[:start_time] ||= Time.current
-    # refresh
-    reset_session_variables
+    @display = session[:display] || "0"
+    @elapsed = "0"
   end
 
   def calculate
     button = params[:button]
 
-    # Start timing from when the button is clicked
     start_time = Time.current
 
     case button
@@ -25,12 +20,12 @@ class CalculatorController < ApplicationController
       update_calculation(button)
     end
 
-    # Calculate elapsed time and store it
-    @elapsed = Time.current - start_time
-    session[:display] = @display
+    @elapsed = (Time.current - start_time).round(2)
 
     respond_to do |format|
       format.turbo_stream
+      format.json { render json: @result }
+      format.any { render plain: "Not Acceptable", status: :not_acceptable }
     end
   end
 
@@ -47,7 +42,7 @@ class CalculatorController < ApplicationController
     session[:operation] = "0"
     session[:operator] = nil
     session[:operand] = nil
-    @display = "0"
+    session[:display] = "0"
   end
 
   def perform_calculation
@@ -86,51 +81,37 @@ class CalculatorController < ApplicationController
       @display = result
       reset_session_variables
     else
-      format_and_update_display(result)
-      # Prepare for next operation
-      session[:operation] = @display
+      session[:operation] = result.to_s
       session[:operator] = nil
       session[:operand] = nil
+      @display = result % 1 == 0 ? result.to_i.to_s : result.to_s
     end
-  end
-
-  def format_and_update_display(result)
-    # Remove trailing zeros from integer results
-    @display = result % 1 == 0 ? result.to_i.to_s : result.to_s
   end
 
   def update_calculation(button)
     if ["+", "-", "*", "/"].include?(button)
-      # Only set the operator if an operation has already been initiated
       session[:operator] = button if session[:operation] != "0" || !session[:operand].nil?
     elsif session[:operator].nil?
       session[:operation] = "0" if session[:operation].nil?
-      # Append the button to session[:operation], handling leading zeros appropriately
       session[:operation] = if session[:operation] == "0" && button != "0"
-                              button # Replace '0' with button if not intending to input '00', '000', etc.
+                              button
                             else
                               session[:operation] + button
                             end
-    # Initialize session[:operation] if it's nil
     else
-      # Initialize session[:operand] as a string if it's nil, then append the button
       session[:operand] = (session[:operand] || "") + button
     end
     update_display
   end
 
   def update_display
-    # This method updates the display based on the current calculation state.
-    # It now immediately reflects the operator once it's selected.
     @display = if session[:operator].present? && (session[:operand].nil? || session[:operand].empty?)
-                 # If an operator is selected but no operand yet, include the operator in the display.
                  "#{session[:operation]} #{session[:operator]}"
                elsif session[:operand].present?
-                 # If there is an operand, show the full calculation.
                  "#{session[:operation]} #{session[:operator]} #{session[:operand]}"
                else
-                 # Default to just showing the operation if no operator or operand is present.
                  session[:operation].to_s
                end
+    session[:display] = @display
   end
 end
