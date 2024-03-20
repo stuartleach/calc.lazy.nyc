@@ -1,24 +1,23 @@
-# README
+# Calculator Project
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is a simple calculator project that allows users to perform basic arithmetic operations such as addition, subtraction, multiplication, and division.
 
-Things you may want to cover:
+## Technologies
 
-* Ruby version
+This calculator uses Turbo on Rails, serving html templates on demand without needing an entire page load.
 
-* System dependencies
+## Philosophy
 
-* Configuration
+Because I wanted to grok Ruby, Rails, and Turbo quickly, I sacrificed speed for the sake of becoming more familiar with Turbo and Rails.
 
-* Database creation
+If I were to optimize this app for speed, I would use inline JS to replace `@display` with each numpad input, and only serve a new turbo-frame when a calculation is required, and potentially log that to a SQLite DB.
 
-* Database initialization
+Other considerations: I thought about saving the state of an operation to the browser's history, but decided against it.
 
-* How to run the test suite
+## Installation
 
-* Services (job queues, cache servers, search engines, etc.)
+Clone the repository:
 
-* Deployment instructions
-
-* ...
+```bash
+git clone https://github.com/stuartleach/calc.lazy.nyc.git
+```
