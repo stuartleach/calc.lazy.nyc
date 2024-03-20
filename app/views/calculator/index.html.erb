@@ -1,33 +1,16 @@
 <!-- app/views/calculator/index.html.erb -->
 <div id="smaller-container">
-  <%= turbo_frame_tag "calculator" do %> <%= form_tag("/calculate", method:
-  :post, data: { turbo_action: 'replace', turbo_frame: 'calculator' }) do %> <%=
-  text_field_tag :display, nil, readonly: true, style: "width: 100%; text-align:
-  right; font-size: 2em; border: 0"
-  %>
-    </div>
-    <div id="result">
-      <%= turbo_frame_tag "result" do %> <% end %></div>
-    <div style="display: absolute">
-      <div
-    id="keypad"
-    style="
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      max-width: 300px;
-      margin: auto;
-    ">
-        <% ['1', '2', '3', '+', '4', '5', '6', '-', '7', '8', '9', '*', 'C', '0',
-    '/', '='].each do |button| %> <%= button_tag button, name: 'button', value:
-    button, class: "keypad-button" %> <% end %>
+  <%= turbo_frame_tag "calculator" do %>
+    <%= form_tag("/calculate", method: :post, data: { turbo_action: 'replace', turbo_frame: 'calculator' }) do %>
+      <div id="display"><%= @display %></div>
+      <div id="keypad" >
+        <% ['1', '2', '3', '+', '4', '5', '6', '-', '7', '8', '9', '*', 'C', '0', '/', '='].each do |button| %>
+          <%= button_tag button, name: 'button', value: button, class: "keypad-button", data: { turbo_frame: "calculator" } %>
+        <% end %>
       </div>
-    </div>
-    <input type="hidden" name="operation" id="operation">
-    <input type="hidden" name="operator" id="operator">
-    <input type="hidden" name="operand" id="operand">
-  <% end %> <% end %>
+    <% end %> <!-- Close form_tag -->
+  <% end %> <!-- Close turbo_frame_tag for "calculator" -->
+</div>
 <style>
   .keypad-button {
     width: 20%;
@@ -39,6 +22,12 @@
     cursor: pointer;
     font-family: monospace;
     transition: background-color 0.3s;
+    border-radius: 5px;
+  }
+
+
+  #keypad {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 300px; margin: auto;
   }
 
   .keypad-button:hover {
@@ -59,12 +48,19 @@
     height: 100px;
   }
 
-  #keypad {
+
+  #display {
+    width: 90%;
+    margin: 0 auto;
+    text-align: center;
+    height: 50px;
+    font-size: 2em;
+    font-family: monospace;
+    background-color: #eaeaea;
     display: flex;
-    flex-wrap: wrap;
+    align-items: center;
     justify-content: center;
-    gap: 10px;
-    max-width: 300px;
-    margin: auto;
+    border-radius: 10px;
+    margin-bottom: 20px;
   }
 </style>
