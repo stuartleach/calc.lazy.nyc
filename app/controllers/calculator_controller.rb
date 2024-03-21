@@ -12,12 +12,12 @@ class CalculatorController < ApplicationController
 
     if button == "C"
       reset_session_variables
-    elsif button == "="
+    elsif button == "=" && valid_calculation?
       perform_calculation
     elsif ["+", "-", "*", "/"].include?(button)
       perform_calculation if valid_calculation?
-      session[:operator] = button
-      session[:operand] = nil # Clear operand for the next operation
+      session[:operator] = button unless session[:operator] && session[:operand].nil?
+      # NOTE: The condition above prevents resetting the operator if one is already set and no operand has been input yet.
     else
       update_calculation(button)
     end
@@ -76,27 +76,21 @@ class CalculatorController < ApplicationController
   end
 
   def update_calculation(button)
-    if ["+", "-", "*", "/"].include?(session[:operator]) && session[:operand].nil?
-      # If an operator is already set and operand is nil, start a new operand
-      session[:operand] = button
-    elsif session[:operator]
-      # If an operator is already set and we have started an operand, append to it
-      session[:operand] = (session[:operand] || "") + button
-    else
-      # If no operator is set, we're still building the initial operation number
+    if session[:operator].nil?
+      # Still building the initial operation number
       session[:operation] = session[:operation] == "0" && button != "0" ? button : session[:operation] + button
+    else
+      # An operator is set; start or continue building the operand
+      session[:operand] = (session[:operand] || "") + button
     end
-    update_display
+    update_display # Ensure display is updated to reflect the latest state
   end
 
   def update_display
-    @display = if session[:operator].nil?
-                 "#{session[:operation] || ''}"
-               elsif session[:operand].nil? || session[:operand].empty?
-                 "#{session[:operation]} #{session[:operator] || ''}"
-               else
-                 "#{session[:operation]} #{session[:operator]} #{session[:operand]}"
-               end
+    # Reflects the current state, including operation, operator, and potentially an operand
+    @display = "#{session[:operation]}"
+    @display += " #{session[:operator]}" if session[:operator]
+    @display += " #{session[:operand]}" if session[:operand]
   end
 
   def format_result(result)

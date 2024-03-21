@@ -8,9 +8,6 @@
           <%= button_tag button, name: 'button', value: button, class: "keypad-button", data: { turbo_frame: "calculator" } %>
         <% end %>
       </div>
-      <div id="elapsed">
-        <%= @elapsed %>
-      </div>
     <% end %> <!-- Close form_tag -->
   <% end %> <!-- Close turbo_frame_tag for "calculator" -->
 </div>
@@ -49,13 +46,6 @@
     width: 100%;
     text-align: center;
     height: 100px;
-  }
-
-  #elapsed {
-    width: 100%;
-    text-align: center;
-    height: 100px;
-    color: black;
   }
 
 
