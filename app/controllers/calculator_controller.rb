@@ -76,19 +76,24 @@ class CalculatorController < ApplicationController
   end
 
   def update_calculation(button)
-    if session[:operator]
-      # If an operator is already set, we're working on the operand
+    if ["+", "-", "*", "/"].include?(session[:operator]) && session[:operand].nil?
+      # If an operator is already set and operand is nil, start a new operand
+      session[:operand] = button
+    elsif session[:operator]
+      # If an operator is already set and we have started an operand, append to it
       session[:operand] = (session[:operand] || "") + button
     else
-      # Append button to operation or replace it if it's the initial zero
-      session[:operation] = (session[:operation] == "0" ? "" : session[:operation]) + button
+      # If no operator is set, we're still building the initial operation number
+      session[:operation] = session[:operation] == "0" && button != "0" ? button : session[:operation] + button
     end
     update_display
   end
 
   def update_display
-    @display = if session[:operand].nil?
-                 "#{session[:operation]} #{session[:operator]}"
+    @display = if session[:operator].nil?
+                 "#{session[:operation] || ''}"
+               elsif session[:operand].nil? || session[:operand].empty?
+                 "#{session[:operation]} #{session[:operator] || ''}"
                else
                  "#{session[:operation]} #{session[:operator]} #{session[:operand]}"
                end
